@@ -1,0 +1,7 @@
+<snippet>
+  <content><![CDATA[
+\$${1:var} = isset(\$${2:_GET}['${1:var}']) && !empty(\$${2:_GET}['${1:var}']) ? \$${2:_GET}['${1:var}'] : ${3:null};
+]]></content>
+  <tabTrigger>get</tabTrigger>
+  <scope>source.php</scope>
+</snippet>

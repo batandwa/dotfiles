@@ -1,0 +1,4 @@
+{
+  "terminal": "C:\\Program Files\\ConEmu\\ConEmu64.exe",
+  "parameters": ["/dir", "%1", "/single"]
+}

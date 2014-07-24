@@ -1,0 +1,33 @@
+{
+	"color_scheme": "Packages/User/Base16 Bright Light.tmTheme",
+	"detect_slow_plugins": false,
+	"font_size": 11,
+	"ignored_packages":
+	[
+		"SVN",
+		"phpDocumentor",
+		"Nodejs",
+		"Drupal",
+		"Vintage",
+		"Emmet",
+		"Github Tools",
+		"AutoPHPDollar",
+		"SASS Build",
+		"Color Highlighter",
+		"WordHighlight",
+		"Tortoise",
+		"Automatic Backups"
+	],
+	"line_padding_bottom": 1,
+	"rulers":
+	[
+		80,
+		120,
+		200
+	],
+	"show_full_path": false,
+	"tab_size": 2,
+	"theme": "Phoenix Light.sublime-theme",
+	"translate_tabs_to_spaces": true,
+	"word_separators": "./\\()\"'-:,.;<>~!@#%^&*|+=[]{}`~?"
+}

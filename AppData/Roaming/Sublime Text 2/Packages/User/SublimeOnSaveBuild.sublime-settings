@@ -1,0 +1,3 @@
+{
+    //"filename_filter": "(/|\\\\|^)(?!_)(\\w+)\\.(css|js|sass|less|scss)$"
+}

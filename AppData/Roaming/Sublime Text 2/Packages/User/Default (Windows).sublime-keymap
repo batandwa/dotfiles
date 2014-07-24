@@ -1,0 +1,13 @@
+[
+  { "keys": ["ctrl+d"], "command": "duplicate_line" },
+  { "keys": ["ctrl+shift+d"], "command": "run_macro_file", "args": {"file": "Packages/Default/Delete Line.sublime-macro"} },
+  { "keys": ["ctrl+shift+;"], "command": "run_macro_file", "args": {"file": "Packages/User/Terminate Line.sublime-macro"} },
+  { "keys": ["ctrl+shift+t"], "command": "reopen_last_file" },
+  { "keys": ["ctrl+u"], "command": "find_under_expand" },
+  { "keys": ["ctrl+alt+t"], "command": "open_terminal" }
+
+  
+  // { "keys": ["ctrl+t"], "command": "transpose" }
+  // { "keys": ["ctrl+t"] },
+  ,{ "keys": ["ctrl+alt+f"], "command": "navigate_to_definition" }
+]

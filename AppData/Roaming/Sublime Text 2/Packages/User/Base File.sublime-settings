@@ -1,0 +1,9 @@
+{
+  "jsdocs_spacer_between_sections": true,
+  "jsdocs_extra_tags": [
+    "@author  Batandwa Colani",
+    "@date {{date}}",
+    "@version ${1:1}"
+  ],
+  "jsdocs_extra_tags_go_after": false
+}
