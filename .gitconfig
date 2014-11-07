@@ -1,0 +1,5 @@
+[user]
+	name = Batandwa Colani
+	email = BColani@Autopage.Altech.co.za
+[alias]
+  fa = !git remote | xargs -r -l1 git fetch && [ -d .git/svn ] && git-svn fetch || :

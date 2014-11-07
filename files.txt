@@ -1,0 +1,12 @@
+AppData/Roaming/Sublime Text 2/Packages/User
+.bashrc
+.bash_profile
+.bash_aliases
+.bash_functions
+.zs
+.zshrc
+.gitconfig
+Linkchecker/check.py
+Linkchecker/sites.txt
+Linkchecker/rasterize.js
+.vimrc
