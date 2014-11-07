@@ -1,19 +1,322 @@
-ssh-reagent () {
-    for agent in /tmp/ssh-*/agent.*; do
-        export SSH_AUTH_SOCK=$agent
-        if ssh-add -l 2>&1 > /dev/null; then
-            echo Found working SSH Agent:
-            ssh-add -l
-            return
-        fi
-   done
-   echo Cannot find ssh agent - maybe you should reconnect and forward it?
+# Searches this file for the specified substring
+showa () { /bin/grep -i -a1 $@ ~/.bash_aliases | grep -v '^\s*$' ; }
+
+# Updates this file from the master on the server
+updatealiases() {
+#  scp "batandwa@192.168.1.5:/home/batandwa/bin/aliases.sh" ~/bin/aliases.sh
+#  . ~/bin/aliases.sh
+  if [ -z $1 ];then
+    script_path=$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)/`basename "${BASH_SOURCE[0]}"`
+    if [[ -d $script_path ]]; then
+  echo "Supply path to alias file. Cannot update current path."
+  return 1
+    else
+  echo "Supply path to alias file."
+  return 1
+    fi
+  else
+    script_path=$1
+  fi
+  
+  curl -S https://gist.githubusercontent.com/batandwa/5813465/raw/6e27d682db18b54965ac4d03204717c9f7e37ea5/.bash_aliases > $script_path
+  chmod +x $script_path
+  . $script_path
 }
 
-create() {
-  rm -rf "$@"
-  mkdir -p "$@"
-  rm -rf "$@"
-  touch "$@"
-  echo "$@"
+# Upload files from the apt local cache to the server
+uploaddebs () {
+  #scp /var/cache/apt/archives/*.deb "batandwa@192.168.1.5:/mnt/Repository/Software/Linux/Ubuntu\ 12.04\ Debians"
+  rsync -avz -e ssh /var/cache/apt/archives/*.deb "batandwa@192.168.1.5:/mnt/Repository/Software/Linux/Ubuntu\ 12.04\ Debians"
+}
+
+# Sets up my popular screen tasks
+screensetup () {
+  # Created the screen session
+  screen -AmdS batandwa
+  
+  if grep -q SUSE "/proc/version"; then
+    screen -S batandwa -p 0 -X stuff $'su -c yast\r'
+    screen -S batandwa -p 0 -X title 'yast'
+  fi
+  
+  # 1. ScreenLogs
+  screen -S batandwa -X screen -t messages 1
+  set log_files=''
+  if grep -qi SUSE "/proc/version"; then
+    screen -S batandwa -p 1 -X stuff $'sudo tail -f /var/log/messages /var/log/warn /var/log/apache2/error_log \r'
+  elif grep -qi Ubuntu "/proc/version"; then
+    screen -S batandwa -p 1 -X stuff $'sudo tail -f /var/log/syslog /var/log/dmesg /var/log/apache2/error.log \r'
+  fi
+
+  # 2. Super user
+  screen -S batandwa -X screen -t su 3
+  screen -S batandwa -p 3 -X stuff $'sudo su\r'
+
+  # 2. Others
+  screen -S batandwa -X screen -t bash1 4
+  screen -S batandwa -X screen -t bash2 5
+  screen -S batandwa -X screen -t bash3 6
+  screen -S batandwa -X screen -t bash4 7
+}
+
+# Date and time
+timestamp () { date +%Y%m%d_%H%M%S; }
+
+# Scan debian packages and create a Package file
+scanpackages() { dpkg-scanpackages . /dev/null > Packages; }
+
+# Uploads the public keys from the current user's .ssh to the specified server
+# Script sources from http://hints.macworld.com/article.php?story=2007091814022049. Credit to devros
+deploykey() {
+  if [ -z $1 ];then
+      echo "Pass user@example.com argument"
+      return
+  fi
+
+   for f in ~/.ssh/*.pub; do
+     key_data=`cat $f`
+     ssh -q $1 "mkdir ~/.ssh 2>/dev/null; chmod 700 ~/.ssh; echo "$key_data" >> ~/.ssh/authorized_keys; chmod 644 ~/.ssh/authorized_keys"
+   done
+}
+
+# Clones a repo and creates a virtual host in Apache.
+gitvhost() {
+  GIT_REPOS_PATH="/srv/git"
+  VHOSTS_PATH="/srv/www/vhosts/"
+  VHOSTS_DEST=`basename ${1/.git/}`
+  VHOSTS_DEST=`webname $VHOSTS_DEST`
+
+  host_path=`createvhost $1`
+  git init --bare /srv/git/$1
+  git clone ssh://server.home/srv/git/$1 $host_path
+  service apache2 restart
+  
+  wwwperm $host_path
+  wwwperm /srv/git/$1
+  echo "Host $1.server.home created
+  "
+}
+
+gitcreate () {
+  ssh server.home "git init /srv/git/$1"
+}
+
+createvhost() {
+  if [[ $EUID -ne 0 ]]; then
+    echo "You must be a root user" 2>&1
+    return
+  fi
+  
+  VHOSTS_PATH="/srv/www/vhosts/"
+  VHOSTS_DEST=`basename ${1/.git/}`
+  VHOSTS_DEST=`webname $VHOSTS_DEST`
+  VHOSTS_CONF_FILE=/etc/apache2/vhosts.d/ip-based_vhosts.conf
+
+  # Add vhost conf to Apache file
+  echo "<VirtualHost *:80>" >> ${VHOSTS_CONF_FILE}
+  echo "    DocumentRoot ${VHOSTS_PATH}${VHOSTS_DEST}" >> ${VHOSTS_CONF_FILE}
+  echo "    ServerName $1.server.home" >> ${VHOSTS_CONF_FILE}
+  echo "    ServerAdmin admin@server.home" >> ${VHOSTS_CONF_FILE}
+  echo "</VirtualHost>" >> ${VHOSTS_CONF_FILE}
+  echo "" >> ${VHOSTS_CONF_FILE}
+
+  # Return path
+  echo ${VHOSTS_PATH}${VHOSTS_DEST}
+}
+
+# Web friendly name
+webname () {
+  new=${1/-/_}
+  echo $new
+}
+
+gitchangedfiles () {
+  mkdir $3 -p
+  git diff --name-only --diff-filter=AMXTCR $1 $2 | xargs -l -I{}  cp --parents --verbose "{}" $3
+}
+
+git-createrepo() {
+  repos_path='/srv/git/';  mkdir $repos_path$1;  git init --bare $repos_path$1;  echo "Repository location: ssh://$USER@`cat /etc/HOSTNAME`$repos_path$1";  
+}
+
+git-db() {
+  git commit --allow-empty -m"Database dump. $1"
+}
+
+broadcastmessage() {
+  #ssh  jax@wsx04 "kdialog --display :0 --error 'Service xxx Has Failed - Error: $?'"
+  ssh 192.168.1.34 "kdialog --display :0 --error 'Service xxx Has Failed - Error: $?'"
+}
+
+wwwperm() {
+  if [[ $EUID -ne 0 ]]; then
+    echo "You must be a root user" 2>&1
+  fi
+  
+  
+  if [ -z $1 ];then
+    echo 'Resetting all directories'
+  else
+    chown wwwrun:www $1 -Rf
+    chmod 775 $1 -Rf
+    return;
+  fi
+
+  if grep -qi SUSE "/proc/version"; then
+    chown wwwrun:www /srv/www/vhosts/ -Rf
+    chmod 775 /srv/www/vhosts/ -Rf
+    chown wwwrun:www /srv/www/htdocs/ -Rf
+    chmod 775 /srv/www/htdocs/ -Rf
+    chown root:www /srv/git/ -Rf
+    chmod 775 /srv/git/ -Rf
+  fi
+}
+
+checkinternet() {
+  WGET="/usr/bin/wget"
+
+  $WGET -q --tries=10 --timeout=5 http://www.google.com -O /tmp/index.google &> /dev/null
+  if [ ! -s /tmp/index.google ];then
+    echo "no"
+    return 1
+  else
+    echo "yes"
+    return 0
+  fi
+}
+
+
+# A script to push a key to the only argument, a remote server.
+# Source: http://meinit.nl/distribute-ssh-keys-easily
+sshpushkey() {
+  # Check if an argument was given.
+  if [ ! "$1" ] ; then
+  echo "Please specify a hostname to distribute the key to."
+  exit 1
+  fi
+
+  # Check if all the local files are here.
+  if [ ! -f ~/.ssh/id_rsa.pub ] ; then
+  echo "The local file ~/.ssh/id_rsa.pub is missing. Please create it."
+  exit 1
+  fi
+
+  # This command send the key, create a .ssh dir if required and set the
+  # correct permissions.
+  cat ~/.ssh/id_rsa.pub | ssh -q "$1" "if [ ! -d ~/.ssh/ ] ; then mkdir ~/.ssh ; fi ; chmod 700 ~/.ssh/ ; cat - >> ~/.ssh/authorized_keys ; chmod 600 ~/.ssh/authorized_keys"
+}
+
+dropfolder() {
+  cat $1
+}
+
+createvmbox() {
+  if [ -z "$2" ];then
+    echo "We need 2 parameters boet."
+    echo "    Usage: $FUNCNAME vagrant-name vbox-machine-name"
+    return 1
+  fi
+
+  export lowername=$2
+  export tempdir=createvmbox.$((RANDOM))
+
+  mkdir -p /tmp/$tempdir
+  cd /tmp/$tempdir
+  VBoxManage export "$2" --output "box.ovf" --manifest
+  export retval=$?
+  if [ $retval -ne 0 ]; then
+    echo "Error exporting VirtualBox machine. Exiting."
+    return 2
+  fi
+
+  # Remove existing box
+  if [[ `vagrant box list` =~ "$1" ]]; then
+    echo "Removing old box."
+    vagrant box remove $1 virtualbox
+  fi
+
+  echo '{"provider":"virtualbox"}' >> metadata.json
+  zip "$lowername.box" *
+  vagrant box add $1 "$lowername.box"
+  cd -
+  rm /tmp/$tempdir -R
+}
+
+drush() {
+  if [[ $@ == "dl" ]]; then command drush dl --cache | more; else command drush "$@"; fi; 
+}
+
+drush() {
+  if [[ $@ == "make" ]]; then command drush --only-once --strict=0 make --concurrency=1 | more; else command drush "$@"; fi; 
+}
+
+function acurl { Q="$@"; AGENT="Mozilla/4.0"; stream=$(curl -A "$AGENT" -skLm 10 "${Q//\ /+}"); echo "${stream}"; }
+function ggle { Q="$@"; GOOG_URL='https://www.google.de/search?tbs=li:1&q='; AGENT="Mozilla/4.0"; stream=$(curl -A "$AGENT" -skLm 10 "${GOOG_URL}${Q//\ /+}" | grep -oP '\/url\?q=.+?&amp' | sed 's|/url?q=||; s|&amp||'); echo -e "${stream//\%/\x}"; }
+
+vagrantpack() {
+  if [ -z "$1" ];then
+    echo "Supply box name."
+    return 1
+  else
+    boxname=$1
+  fi
+  
+  packfile=$((RANDOM)).box
+  vagrant halt
+#   vagrant package $boxname --output $packfile -vagrantfile Vagrantfile
+  vagrant package --output $packfile --vagrantfile Vagrantfile
+  vagrant box remove $boxname virtualbox
+  vagrant box add $boxname $packfile
+  rm $packfile
+}
+
+vagrant() {
+  if [[ $@ == "rebuild" ]]; then command vagrant halt && vagrant destroy -f && vagrant up | more; else command vagrant "$@"; fi; 
+}
+
+dockerdrupal() {
+  if [[ $EUID -ne 0 ]]; then
+    echo "You must be a root user" 2>&1
+  fi
+  #docker run -d -v "`pwd`/mysql":/var/lib/mysql -v "`pwd`/site":/var/www -v "`pwd`":/docker -v ~/.drush:/root/.drush fjmk/docker-drupal-dev
+  docker run -d -v "`pwd`/mysql":/var/lib/mysql -v "`pwd`/site":/var/www -v "`pwd`":/docker -v /home/batandwa/.drush:/root/.drush fjmk/docker-drupal-dev
+  docker inspect `docker ps -q -l` | grep IPAddress | awk '{print $2}' | tr -d '",/n' 
+}
+
+docker() {
+  APPLICATION="docker"
+  TRIGGER="ip"
+  COMMAND="$APPLICATION ps"
+  if [[ $@ == "$TRIGGER" ]]; then command $COMMAND | more; else command $APPLICATION "$@"; fi; 
+}
+
+# docker() {
+#   APPLICATION="docker"
+#   TRIGGER="get"
+#   CONTAINER=$1
+#   SETTING=$2
+#   COMMAND="$APPLICATION inspect $CONTAINER | grep $SETTING | awk '{print $2}' | tr -d '\",/n'"
+#   echo $TRIGGER
+#   echo $@
+#   if [[ $@ == "$TRIGGER" ]]; then 
+#     if [ -z "$2" ];then
+#       echo "Usage: docker get CONTAINER SETTING" 2>&1
+#       return 1
+#     fi
+#     command $COMMAND | more
+#   else
+#     command $APPLICATION "$@"
+#   fi
+# }
+
+ssh-reagent () {
+  for agent in /tmp/ssh-*/agent.*; do
+    export SSH_AUTH_SOCK=$agent
+    if ssh-add -l 2>&1 > /dev/null; then
+      echo Found working SSH Agent:
+      ssh-add -l
+      return
+    fi
+  done
+  echo Cannot find ssh agent - maybe you should reconnect and forward it?
 }

@@ -1,5 +1,13 @@
 [user]
 	name = Batandwa Colani
-	email = BColani@Autopage.Altech.co.za
+	email = i@batandwa.me
 [alias]
-  fa = !git remote | xargs -r -l1 git fetch && [ -d .git/svn ] && git-svn fetch || :
+	st = status
+	ci = commit -v
+  co = checkout
+  br = branch
+  unstage = reset HEAD --
+  last = log -1 HEAD
+  start = "!git init; git add .; git commit --allow-empty -m \"Initial commit\""
+[core]
+	filemode = false
