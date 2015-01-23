@@ -14,3 +14,5 @@ Linkchecker/rasterize.js
 .shell_aliases
 .shell_local
 .shell_rc
+.bowerrc
+.gitk
