@@ -1,0 +1,52 @@
+{
+  "command_on_save_plus": {
+    "setting": [
+      {
+        "folder": "C:\\Users\\bcolani\\Code\\Sasol\\extras\\sasol_sd\\compass\\sass",    // either a folder or empty to match all folders
+        "file": "",       // either a file name or empty to evaluate for all files
+        "root": "",       // either a file root (before extension) or empty to evaluate for all roots.
+        "extension":  "",    // either an extension or empty to evaluate for all extensions
+        "command":  "C:/Users/bcolani/bin/autocommit.bat C:/Users/bcolani/Code/Sasol/extras/sasol_sd/css" // %PROJECT_FOLDER%, %FILE_FOLDER%, %FILE_NAME%, %FILE_PATH%
+        // "command":  "lessc %FILE_FOLDER%/bootstrap.less %PROJECT_FOLDER%/css/bootstrap.css" // %PROJECT_FOLDER%, %FILE_FOLDER%, %FILE_NAME%, %FILE_PATH%
+      },
+      {
+        "folder": "C:\\Users\\bcolani\\Code\\Sasol\\extras\\sasol_sd\\css",    // either a folder or empty to match all folders
+        "file": "",       // either a file name or empty to evaluate for all files
+        "root": "",       // either a file root (before extension) or empty to evaluate for all roots.
+        "extension":  "",    // either an extension or empty to evaluate for all extensions
+        "command":  "C:/Users/bcolani/bin/autocommit.bat C:/Users/bcolani/Code/Sasol/extras/sasol_sd/css" // %PROJECT_FOLDER%, %FILE_FOLDER%, %FILE_NAME%, %FILE_PATH%
+        // "command":  "lessc %FILE_FOLDER%/bootstrap.less %PROJECT_FOLDER%/css/bootstrap.css" // %PROJECT_FOLDER%, %FILE_FOLDER%, %FILE_NAME%, %FILE_PATH%
+      },
+      {
+        "folder": "C:\\Users\\bcolani\\Code\\Development Features\\sites\\all\\modules\\aap_altech_features\\content_sync_client",    
+        "file": "",       
+        "root": "",       
+        "extension":  "",    
+        "command":  "C:/Users/bcolani/bin/autocommit.bat \"%FILE_FOLDER%\"" 
+        
+      },
+      {
+        "folder": "C:\\Users\\bcolani\\Code\\Sasol\\extras\\sasol_sd\\compass\\sass",    
+        "file": "",       
+        "root": "",       
+        "extension":  "",    
+        "command":  "C:/Users/bcolani/bin/autocommit.bat \"C:/Users/bcolani/Code/Sasol/extras/sasol_sd/css\"" 
+        
+      },
+      {
+        "folder": "C:\\Users\\bcolani\\Code\\Sasol\\extras\\sasol_sd",
+        "file": "index.php",
+        "root": "",
+        "extension":  "",
+        "command":  "C:/Users/bcolani/bin/autocommit.bat C:/Users/bcolani/Code/Sasol/extras/sasol_sd/index.php"
+      },
+      {
+        "folder": "C:\\Users\\bcolani\\Code\\Sasol\\extras\\sasol_sd\\js",
+        "file": "custom.js",
+        "root": "",
+        "extension":  "",
+        "command":  "C:/Users/bcolani/bin/autocommit.bat C:/Users/bcolani/Code/Sasol/extras/sasol_sd/custom.js"
+      }
+    ]
+  }
+}

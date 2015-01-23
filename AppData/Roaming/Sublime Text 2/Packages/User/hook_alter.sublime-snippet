@@ -1,0 +1,26 @@
+<snippet>
+  <content><![CDATA[
+function mymodule_myhook(\$myvar) {
+  \$hooks = module_implements('myhook_alter');
+  \$original_source = \$source;
+
+  if(count(\$hooks) > 0) {
+    drupal_alter('myhook', \$myvar, \$original_myvar);
+  }
+
+  return \$myvar;
+}
+
+function mymodule_myhook_alter(&\$myvar, \$original_myvar) {
+  \$myvar = 'What my module wants the variable to be.';
+}
+
+function another_myhook_alter(&\$myvar, \$original_myvar) {
+  if(\$original_myvar == 1) {
+    \$myvar = 'What the other modules wants the variable to be.';
+  }
+}
+]]></content>
+  <tabTrigger>hook_alter</tabTrigger>
+  <scope>source.php</scope>
+</snippet>

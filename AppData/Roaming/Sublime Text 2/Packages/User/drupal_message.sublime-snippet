@@ -1,0 +1,22 @@
+<snippet>
+  <content><![CDATA[
+\$msg_params = array(
+  '%placeholder1' => \$placeholder_value1,
+  '@placeholder2' => \$placeholder_value2,
+  '!placeholder3' => \$placeholder_value3,
+);
+\$admin_msg_text = 'Error including privileged info: %placeholder1';
+\$msg_text = 'Our message to the user: @placeholder2';
+
+if(user_access('see debug info')) {
+  watchdog('our_module_name', \$admin_msg_text, \$msg_params, WATCHDOG_INFO);
+  drupal_set_message(t(\$admin_msg_text, \$msg_params), 'status');
+} elseif(user_access('allowed to user this module')) {
+  watchdog('our_module_name', \$msg_text, \$msg_params, WATCHDOG_INFO);
+  drupal_set_message(t(\$msg_text, \$msg_params), 'status');
+}
+
+]]></content>
+  <tabTrigger>drupal_message</tabTrigger>
+  <scope>source.php</scope>
+</snippet>
