@@ -16,3 +16,5 @@ Linkchecker/rasterize.js
 .shell_rc
 .bowerrc
 .gitk
+.ansible/hosts/docker.py
+.ansible.cfg
