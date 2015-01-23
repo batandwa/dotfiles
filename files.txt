@@ -10,3 +10,7 @@ Linkchecker/check.py
 Linkchecker/sites.txt
 Linkchecker/rasterize.js
 .vimrc
+.shell_functions
+.shell_aliases
+.shell_local
+.shell_rc

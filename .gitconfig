@@ -3,3 +3,7 @@
 	email = BColani@Autopage.Altech.co.za
 [alias]
   fa = !git remote | xargs -r -l1 git fetch && [ -d .git/svn ] && git-svn fetch || :
+[url "https://"]
+	insteadOf = git://
+[core]
+	fileMode = false

@@ -1,9 +1,23 @@
 {
-  "jsdocs_spacer_between_sections": true,
-  "jsdocs_extra_tags": [
-    "@author  Batandwa Colani",
-    "@date {{date}}",
-    "@version ${1:1}"
-  ],
-  "jsdocs_extra_tags_go_after": false
+  "commands": [
+    // example 1: project is in folder /Users/klaascuvelier/Projects/example/ 
+    // rsync files to other server on save
+    // "C:\\Users\\bcolani\\Code\\Sasol\\extras\\sasol_sd\\css::C:/Users/bcolani/bin/autocommit.bat C:/Users/bcolani/Code/Sasol/extras/sasol_sd/css",
+    // "C:\\Users\\bcolani\\Code\\Sasol\\extras\\sasol_sd\\compass\\sass::C:/Users/bcolani/bin/autocommit.bat C:/Users/bcolani/Code/Sasol/extras/sasol_sd/css"
+
+    // example 2: 
+    // just run a bash script on save (you can put much more commands in there)
+    // "/Users/klaascuvelier/Projects/example2/::/Users/klaascuvelier/Projects/example2/command.sh &"
+
+  ]
 }
+
+// {
+//   "jsdocs_spacer_between_sections": true,
+//   "jsdocs_extra_tags": [
+//     "@author  Batandwa Colani",
+//     "@date {{date}}",
+//     "@version ${1:1}"
+//   ],
+//   "jsdocs_extra_tags_go_after": false
+// }

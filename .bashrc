@@ -196,33 +196,9 @@ settitle ()
 # }
 # 
 # alias cd=cd_func
+# 
 
-export SVN_PASSWORD="WRONG PASSWORD"
-
-export PATH=${PATH}:~/bin
-export PATH=${PATH}:/usr/sbin
-export PATH="$PATH:/cygdrive/c/ProgramData/Drush"
-export PATH="$PATH:/cygdrive/c/Program Files (x86)/Drush/GnuWin32/bin"
-export PATH="$PATH:/cygdrive/c/Program Files (x86)/Drush/Php"
-export PATH="$PATH:/cygdrive/c/Program Files (x86)/Drush/cwRsync/bin"
-export PATH=${PATH}:`cygpath "C:\Program Files\adt-bundle-windows-x86_64-20140702\sdk\platform-tools"`
-export PATH=${PATH}:`cygpath "C:\Program Files\adt-bundle-windows-x86_64-20140702\sdk\tools"`
-export PATH=${PATH}:`cygpath "C:\Program Files (x86)\Handle"`
-export PATH=${PATH}:`cygpath "C:\Program Files (x86)\ctags58"`
-export PATH=${PATH}:`cygpath "C:\Program Files (x86)\gradle-2.1\bin"`
-
-ANSIBLE=/opt/ansible
-export PATH=$PATH:$ANSIBLE/bin
-export PYTHONPATH=$ANSIBLE/lib
-export ANSIBLE_LIBRARY=$ANSIBLE/library
-
-# SSHAGENT=/usr/bin/ssh-agent
-# SSHAGENTARGS="-s"
-# if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ]; then
-#     eval `$SSHAGENT $SSHAGENTARGS`
-#     trap "kill $SSH_AGENT_PID" 0
-# fi
-
-ssh-reagent
-
-APLIB_ROLES_PATH=~/.ansible/roles
+. ~/.shell_functions
+. ~/.shell_aliases
+. ~/.shell_local
+. ~/.shell_rc

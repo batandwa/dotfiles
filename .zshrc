@@ -38,6 +38,8 @@ ZSH_THEME="afowler"
 # The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
 # HIST_STAMPS="mm/dd/yyyy"
 
+HISTFILE=~/.bash_history
+
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
@@ -78,3 +80,10 @@ export PATH=$HOME/bin:/usr/local/bin:$PATH
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+
+export GIT_SSH="/usr/bin/ssh"
+
+. ~/.shell_functions
+. ~/.shell_aliases
+. ~/.shell_local
+. ~/.shell_rc
