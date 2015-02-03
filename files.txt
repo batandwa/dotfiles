@@ -19,3 +19,4 @@ Linkchecker/rasterize.js
 .ansible.cfg
 .ansible/hosts/host_vars/.gitkeep
 .ansible/hosts/docker.py
+.config/ranger/rc.conf
